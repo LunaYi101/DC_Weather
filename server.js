@@ -37,3 +37,8 @@ new MongoClient(url).connect().then((client) => {
 }).catch((err) => {
     console.log(err)
 })
+
+// 누가 메인메이지에 들어오면
+app.get('/', (request, response) => {
+    response.render('main.ejs');
+})
