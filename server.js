@@ -42,3 +42,16 @@ new MongoClient(url).connect().then((client) => {
 app.get('/', (request, response) => {
     response.render('main.ejs');
 })
+
+app.post('/', (request, response) => {
+    // 입력받은 제목
+    // console.log(request.body.text)
+    console.log(request.body.text);
+
+    const sentiment_analysis = spawner('python', ['./sentiment.py', JSON.stringify(request.body.text)]);
+
+    sentiment_analysis.stdout.on('data', (data) => {
+
+        console.log(JSON.parse(data.toString()))
+    })
+})
