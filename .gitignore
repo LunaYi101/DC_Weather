@@ -1,2 +1,5 @@
 node_modules/
 credentials.txt
+base.html
+test_js.js
+test_python.py
