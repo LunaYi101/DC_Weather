@@ -9,6 +9,8 @@ const LocalStrategy = require('passport-local')
 const bcrypt = require('bcrypt')
 const MongoStore = require('connect-mongo')
 
+require('dotenv').config()
+
 app.use(methodOverride('_method'))
 app.use(express.static(__dirname + '/public'))
 app.set('view engine', 'ejs')
@@ -21,13 +23,13 @@ app.use(session({
     saveUninitialized: false, // 로그인 안해도 세선 만들 것인지
     cookie: { maxAge: 60 * 60 * 1000 },
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://joonha138:RDe9FWPikehIHlQj@cluster0.fvtycdk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+        mongoUrl: process.env.DB_URL,
         dbName: 'forum'
     })
 }))
 
 let db;
-const url = 'mongodb+srv://joonha138:RDe9FWPikehIHlQj@cluster0.fvtycdk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const url = process.env.DB_URL;
 new MongoClient(url).connect().then((client) => {
     console.log('DB연결성공');
     db = client.db('forum');
@@ -46,7 +48,7 @@ app.get('/', (request, response) => {
 app.post('/', (request, response) => {
     // 입력받은 제목
     // console.log(request.body.text)
-    console.log(request.body.text);
+    console.log(request.body);
 
     const sentiment_analysis = spawner('python', ['./sentiment.py', JSON.stringify(request.body.text)]);
 
@@ -54,4 +56,6 @@ app.post('/', (request, response) => {
 
         console.log(JSON.parse(data.toString()))
     })
+
+    response.redirect('/')
 })

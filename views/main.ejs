@@ -28,17 +28,24 @@
     <!-- axios package -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    <form class="input-group mb-3 parent" action="/" method="POST">
+        <div class="content">
+            <h4 class="display-2 title">텍스트 감정분석기</h4>
+            <div class="input-group">
+                <input type="text" class="form-control" aria-label="Search" aria-describedby="button-addon2"
+                    placeholder="지금 느끼는 감정을 적어주세요." name="text">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">분석</button>
+            </div>
+        </div>
+    </form>
 
-    <h1 class="display-2">텍스트 감정 분석기 v 1.0</h1>
-    
-    <form class="input-group mb-3" action="/" method="POST">
+    <!-- <form class="input-group mb-3" action="/" method="POST">
         <span class="input-group-text" id="inputGroup-sizing-default">글 입력</span>
         <input type="text" class="form-control" aria-label="Sizing example input"
             aria-describedby="inputGroup-sizing-default" name="text">
 
         <button type="submit">분석</button>
-    </form>
-
+    </form> -->
 </body>
 
 </html>
