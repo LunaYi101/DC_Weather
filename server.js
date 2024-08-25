@@ -8,6 +8,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcrypt')
 const MongoStore = require('connect-mongo')
+const { Client, GatewayIntentBits } = require('discord.js')
 
 require('dotenv').config()
 
@@ -28,17 +29,46 @@ app.use(session({
     })
 }))
 
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+
+client.login(process.env.SERVER_ALERT_TOKEN);
+
+client.once('ready', () => {
+    console.log('Discord Server Alert Bot is Ready');
+})
+
 let db;
 const url = process.env.DB_URL;
 new MongoClient(url).connect().then((client) => {
     console.log('DB연결성공');
     db = client.db('forum');
-    app.listen(8082, () => {
-        console.log('http://localhost:8082 에서 서버 실행중')
+    app.listen(process.env.PORT, () => {
+        console.log(`http://localhost:${process.env.PORT} 에서 서버 실행중`)
     })
 }).catch((err) => {
     console.log(err)
 })
+
+async function send_discord_msg (server, text) {
+
+    var channel_id = '';
+
+    if (server == 'alert'){
+        channel_id = process.env.SERVER_ALERT_CHANNEL_ID.toString();
+    } else if (server == 'msg') {
+        channel_id = process.env.MESSAGE_CHANNEL_ID.toString();
+    }
+
+    const channel = client.channels.cache.get(channel_id);
+    
+    if (channel) {
+        channel.send(text)
+            .then(message => console.log(`Sent Discord Message: ${message.content}`))
+            .catch(console.error);
+    } else {
+        console.log('Channel not found!');
+    };
+}
 
 // 누가 메인메이지에 들어오면
 app.get('/', (request, response) => {
@@ -48,14 +78,29 @@ app.get('/', (request, response) => {
 app.post('/', (request, response) => {
     // 입력받은 제목
     // console.log(request.body.text)
-    console.log(request.body);
+    const text = request.body.text;
+    console.log(text);
 
-    const sentiment_analysis = spawner('python', ['./sentiment.py', JSON.stringify(request.body.text)]);
+    try {
+        const sentiment_analysis = spawner('python', ['./sentiment.py', JSON.stringify(text)]);
+        sentiment_analysis.stdout.on('data', (data) => {
 
-    sentiment_analysis.stdout.on('data', (data) => {
+            data = JSON.parse(data.toString());
+            console.log(data);
 
-        console.log(JSON.parse(data.toString()))
-    })
+            send_discord_msg('alert', text);
 
-    response.redirect('/')
+            response.render('result.ejs', { text: text, data: data })
+        })
+    } catch {
+        response.redirect('/')
+    }
+})
+
+app.post('/feedback', (request, response) => {
+    const msg = request.body.text;
+
+    console.log(msg);
+    send_discord_msg('msg', msg);
+    response.redirect('/');
 })

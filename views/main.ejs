@@ -11,7 +11,7 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="/main.css">
 
-    <title>Hello, world!</title>
+    <title>텍스트 감정 분석기</title>
 </head>
 
 <body>
@@ -28,7 +28,7 @@
     <!-- axios package -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <form class="input-group mb-3 parent" action="/" method="POST">
+    <form class="input-group mb-3 parent" style="padding-bottom: 3%;" action="/" method="POST">
         <div class="content">
             <h4 class="display-2 title">텍스트 감정분석기</h4>
             <div class="input-group">
@@ -36,16 +36,10 @@
                     placeholder="지금 느끼는 감정을 적어주세요." name="text">
                 <button class="btn btn-outline-secondary" type="submit" id="button-addon2">분석</button>
             </div>
+            <p style="margin-top: 15px">회원 기능, 자신이 적었던 텍스트 열람 기능 업데이트 예정입니다.</p>
         </div>
     </form>
 
-    <!-- <form class="input-group mb-3" action="/" method="POST">
-        <span class="input-group-text" id="inputGroup-sizing-default">글 입력</span>
-        <input type="text" class="form-control" aria-label="Sizing example input"
-            aria-describedby="inputGroup-sizing-default" name="text">
-
-        <button type="submit">분석</button>
-    </form> -->
 </body>
 
 </html>
