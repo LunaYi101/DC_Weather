@@ -18,16 +18,16 @@ app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(passport.initialize())
-app.use(session({
-    secret: 'bocchi.developer', // 암호화에 쓸 비번
-    resave: false, // 유저가 서버로 요청할 떄마다 세션을 갱신 할 건지
-    saveUninitialized: false, // 로그인 안해도 세선 만들 것인지
-    cookie: { maxAge: 60 * 60 * 1000 },
-    store: MongoStore.create({
-        mongoUrl: process.env.DB_URL,
-        dbName: 'forum'
-    })
-}))
+// app.use(session({
+//     secret: 'bocchi.developer', // 암호화에 쓸 비번
+//     resave: false, // 유저가 서버로 요청할 떄마다 세션을 갱신 할 건지
+//     saveUninitialized: false, // 로그인 안해도 세선 만들 것인지
+//     cookie: { maxAge: 60 * 60 * 1000 },
+//     store: MongoStore.create({
+//         mongoUrl: process.env.DB_URL,
+//         dbName: 'forum'
+//     })
+// }))
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
@@ -37,16 +37,20 @@ client.once('ready', () => {
     console.log('Discord Server Alert Bot is Ready');
 })
 
-let db;
-const url = process.env.DB_URL;
-new MongoClient(url).connect().then((client) => {
-    console.log('DB연결성공');
-    db = client.db('forum');
-    app.listen(process.env.PORT, () => {
-        console.log(`http://localhost:${process.env.PORT} 에서 서버 실행중`)
-    })
-}).catch((err) => {
-    console.log(err)
+// let db;
+// const url = process.env.DB_URL;
+// new MongoClient(url).connect().then((client) => {
+//     console.log('DB연결성공');
+//     db = client.db('forum');
+//     app.listen(process.env.PORT, () => {
+//         console.log(`http://localhost:${process.env.PORT} 에서 서버 실행중`)
+//     })
+// }).catch((err) => {
+//     console.log(err)
+// })
+
+app.listen(process.env.PORT, () => {
+    console.log(`http://localhost:${process.env.PORT} 에서 서버 실행중`)
 })
 
 async function send_discord_msg (server, text) {
