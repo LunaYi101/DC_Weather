@@ -4,6 +4,11 @@ import ast
 import random
 import string
 from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+tokenizer = AutoTokenizer.from_pretrained("hun3359/klue-bert-base-sentiment")
+model = AutoModelForSequenceClassification.from_pretrained("hun3359/klue-bert-base-sentiment")
+
 
 # 1. pos neg
 # classifier = pipeline("text-classification", model="matthewburke/korean_sentiment")
@@ -12,8 +17,14 @@ from transformers import pipeline
 # classifier = pipeline("text-classification", model="smilegate-ai/kor_unsmile")
 
 # 3. 감정
-classifier = pipeline("text-classification", model="hun3359/klue-bert-base-sentiment")
+# classifier = pipeline("text-classification", model="hun3359/klue-bert-base-sentiment")
 
+# custom_tweet = ast.literal_eval(sys.argv[1])
+# preds = classifier(custom_tweet, top_k=None)
+
+classifier = pipeline(task='text-classification',
+                      model=model,
+                      tokenizer=tokenizer)
 custom_tweet = ast.literal_eval(sys.argv[1])
 preds = classifier(custom_tweet, top_k=None)
 
