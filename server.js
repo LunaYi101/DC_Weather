@@ -84,6 +84,7 @@ app.post('/', (request, response) => {
     // console.log(request.body.text)
     const text = request.body.text;
     console.log(text);
+    send_discord_msg('alert', `${text}`);
 
     try {
         const sentiment_analysis = spawner('python', ['./sentiment.py', JSON.stringify(text)]);
@@ -92,7 +93,7 @@ app.post('/', (request, response) => {
             data = JSON.parse(data.toString());
             console.log(data);
 
-            send_discord_msg('alert', text);
+            send_discord_msg('alert', `${text} 처리 완료`);
 
             response.render('result.ejs', { text: text, data: data })
         })
