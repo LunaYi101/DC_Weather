@@ -4,14 +4,6 @@ import ast
 import random
 import string
 from transformers import pipeline
-import torch
-
-if torch.cuda.is_available():
-    device = torch.device("cuda")
-elif torch.backends.mps.is_available():
-    device = torch.device("mps")
-else:
-    device = torch.device("cpu")
 
 # 1. pos neg
 # classifier = pipeline("text-classification", model="matthewburke/korean_sentiment")
@@ -20,10 +12,9 @@ else:
 # classifier = pipeline("text-classification", model="smilegate-ai/kor_unsmile")
 
 # 3. 감정
-classifier = pipeline("text-classification", model="hun3359/klue-bert-base-sentiment", device=device)
+classifier = pipeline("text-classification", model="hun3359/klue-bert-base-sentiment")
 
-# custom_tweet = ast.literal_eval(sys.argv[1])
-custom_tweet = '테스트'
+custom_tweet = ast.literal_eval(sys.argv[1])
 preds = classifier(custom_tweet, top_k=None)
 
 sorted_preds = sorted(preds, key=lambda x: x['score'], reverse=True)
