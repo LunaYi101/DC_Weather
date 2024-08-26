@@ -9,6 +9,9 @@ const LocalStrategy = require('passport-local')
 const bcrypt = require('bcrypt')
 const MongoStore = require('connect-mongo')
 const { Client, GatewayIntentBits } = require('discord.js')
+const http = require('http');
+const querystring = require('querystring');
+const url = require('url');
 
 require('dotenv').config()
 
@@ -36,6 +39,22 @@ client.login(process.env.SERVER_ALERT_TOKEN);
 client.once('ready', () => {
     console.log('Discord Server Alert Bot is Ready');
 })
+
+class MyClassificationPipeline{
+    static task = 'text-classification';
+    static model = "hun3359/klue-bert-base-sentiment";
+    static instance = null;
+
+    static async getInstance(progress_callback = null) {
+        if (this.instance === null) {
+            let {pipeline, env} = await import('@xenova/transformers');
+
+            this.instance = pipeline(this.task, this.model, {progress_callback});
+        }
+
+        return this.instance;
+    }
+}
 
 // let db;
 // const url = process.env.DB_URL;
@@ -79,15 +98,16 @@ app.get('/', (request, response) => {
     response.render('main.ejs');
 })
 
-app.post('/', (request, response) => {
+app.post('/', async (request, response) => {
     // 입력받은 제목
     // console.log(request.body.text)
     const text = request.body.text;
     console.log(text);
-    send_discord_msg('alert', `${text}`);
+    // send_discord_msg('alert', `${text}`);
 
     try {
-        const sentiment_analysis = spawner('python', ['./sentiment.py', JSON.stringify(text)]);
+        // 파이썬 
+        const sentiment_analysis = spawner('python', ['sentiment.py', JSON.stringify(text)]);
         sentiment_analysis.stdout.on('data', (data) => {
 
             data = JSON.parse(data.toString());
@@ -97,7 +117,16 @@ app.post('/', (request, response) => {
 
             response.render('result.ejs', { text: text, data: data })
         })
-    } catch {
+
+        // transformers.js
+        // console.log('here');
+    
+        // const classifier = await  MyClassificationPipeline.getInstance();
+        // const preds = await classifier(text);
+        // console.log(preds);
+        // response.redirect('/')
+    } catch (err){
+        console.log(err);
         response.redirect('/')
     }
 })
