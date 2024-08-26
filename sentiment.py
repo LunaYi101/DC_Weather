@@ -33,7 +33,7 @@ sorted_preds = sorted(preds, key=lambda x: x['score'], reverse=True)
 # def generate_random_label():
 #     return ''.join(random.choices(string.ascii_lowercase, k=4))
 
-# # Create a list of 60 dictionaries
+# # Create a list of 60 dictionariesp
 # sorted_preds = [{'label': generate_random_label(), 'score': random.uniform(0, 1)} for _ in range(60)]
 
 for item in sorted_preds:
