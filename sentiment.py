@@ -1,13 +1,11 @@
 import sys
 import json
 import ast
-import random
-import string
 from transformers import pipeline
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+# from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-tokenizer = AutoTokenizer.from_pretrained("hun3359/klue-bert-base-sentiment")
-model = AutoModelForSequenceClassification.from_pretrained("hun3359/klue-bert-base-sentiment")
+# tokenizer = AutoTokenizer.from_pretrained("hun3359/klue-bert-base-sentiment")
+# model = AutoModelForSequenceClassification.from_pretrained("hun3359/klue-bert-base-sentiment")
 
 
 # 1. pos neg
@@ -17,15 +15,16 @@ model = AutoModelForSequenceClassification.from_pretrained("hun3359/klue-bert-ba
 # classifier = pipeline("text-classification", model="smilegate-ai/kor_unsmile")
 
 # 3. 감정
-# classifier = pipeline("text-classification", model="hun3359/klue-bert-base-sentiment")
+classifier = pipeline("text-classification", model="hun3359/klue-bert-base-sentiment")
 
 # custom_tweet = ast.literal_eval(sys.argv[1])
 # preds = classifier(custom_tweet, top_k=None)
 
-classifier = pipeline(task='text-classification',
-                      model=model,
-                      tokenizer=tokenizer)
+# classifier = pipeline(task='text-classification',
+#                       model=model,
+#                       tokenizer=tokenizer)
 custom_tweet = ast.literal_eval(sys.argv[1])
+# custom_tweet = '테스트'
 preds = classifier(custom_tweet, top_k=None)
 
 sorted_preds = sorted(preds, key=lambda x: x['score'], reverse=True)
