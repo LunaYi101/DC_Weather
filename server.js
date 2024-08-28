@@ -12,6 +12,7 @@ const { Client, GatewayIntentBits } = require('discord.js')
 const http = require('http');
 const querystring = require('querystring');
 const url = require('url');
+const req = require('request');
 
 require('dotenv').config()
 
@@ -107,24 +108,26 @@ app.post('/', async (request, response) => {
 
     try {
         // 파이썬 
-        const sentiment_analysis = spawner('python', ['sentiment.py', JSON.stringify(text)]);
-        sentiment_analysis.stdout.on('data', (data) => {
+        // const sentiment_analysis = spawner('python', ['sentiment.py', JSON.stringify(text)]);
+        // sentiment_analysis.stdout.on('data', (data) => {
 
-            data = JSON.parse(data.toString());
-            console.log(data);
+        //     data = JSON.parse(data.toString());
+        //     console.log(data);
 
+        //     send_discord_msg('alert', `${text} 처리 완료`);
+
+        //     response.render('result.ejs', { text: text, data: data })
+        // })
+
+        // FastAPI
+        req(`http://0.0.0.0:8000/sentiment/?text=${text}`, (error, res, body)=>{
+            // console.log(body);
+
+            data = JSON.parse(body.toString());
             send_discord_msg('alert', `${text} 처리 완료`);
+            response.render('result.ejs', {text : text, data : data});
+        });
 
-            response.render('result.ejs', { text: text, data: data })
-        })
-
-        // transformers.js
-        // console.log('here');
-    
-        // const classifier = await  MyClassificationPipeline.getInstance();
-        // const preds = await classifier(text);
-        // console.log(preds);
-        // response.redirect('/')
     } catch (err){
         console.log(err);
         response.redirect('/')
